@@ -18,6 +18,20 @@
 
 ### 3. new `handle_connection` method to parse a 404 Not Found response
 
-![img2](assets/commit3.png)
+![img3](assets/commit3.png)
 
-- The function then constructs an HTTP response. The status line of the response is set to "HTTP/1.1 404 NOT FOUND", indicating an unsuccessful HTTP request. The contents of the response are read from a file named "404.html". The length of the contents is calculated and set as the "Content-Length" header of the response.
+- The function then constructs an HTTP response. The status line of the response is set to "HTTP/1.1 404 NOT FOUND", indicating an unsuccessful HTTP request. The contents of the response are read from a file named "notfound.html". The length of the contents is calculated and set as the "Content-Length" header of the response.
+
+### 4. new `handle_connection` method to simulate a slow request
+
+#### Browser with /sleep Route:
+
+- When you navigate to 127.0.0.1/sleep in one browser window, the server's handle_connection function receives a request with the path /sleep.
+- The server's code then matches this path to the "GET /sleep HTTP/1.1\r\n" case, which triggers a delay of 10 seconds using thread::sleep(Duration::from_secs(10)).
+- During this delay, the server is busy waiting, and it cannot handle any other incoming requests.
+
+#### Browser with Default Route:
+
+- Meanwhile, if you navigate to 127.0.0.1 in another browser window, the server's handle_connection function receives a request with the path /.
+- Since this path matches the "GET / HTTP/1.1\r\n" case, it responds immediately with the contents of hello.html.
+- This response is not delayed because the request did not match the /sleep route, and the server can handle it immediately.

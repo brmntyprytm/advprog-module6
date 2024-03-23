@@ -9,20 +9,20 @@
 - `let http_request: Vec<_> = buf_reader.lines().map(|result| result.unwrap()).take_while(|line| !line.is_empty()).collect();` This line reads the HTTP request from the client. The `lines()` method reads the request line by line. The `map()` method transforms each line into a `Result<String, io::Error>`. The `unwrap()` method is used to unwrap the Result and get the String value. The `take_while()` method takes lines from the iterator until a line that is empty is encountered. The `collect()` method collects the lines into a `Vec<String>`.
 - `println!("Request: {:#?}", http_request);` This line prints the HTTP request to the console. The {:#?} syntax is used to pretty-print the request.
 
-### 2. new `handle_connection` method to parse a 200 OK response
+### 2. New `handle_connection` method to parse a 200 OK response
 
 ![img1](assets/commit2.png)
 
 - The function then constructs an HTTP response. The status line of the response is set to "HTTP/1.1 200 OK", indicating a successful HTTP request. The contents of the response are read from a file named "hello.html". The length of the contents is calculated and set as the "Content-Length" header of the response.
 - The `handle_connection` function is called for each incoming connection in the `main` method. The `main` method listens for incoming TCP connections on the IP address "127.0.0.1" and port "7878". For each incoming connection, the `handle_connection` function is called to handle the connection.
 
-### 3. new `handle_connection` method to parse a 404 Not Found response
+### 3. New `handle_connection` method to parse a 404 Not Found response
 
 ![img3](assets/commit3.png)
 
 - The function then constructs an HTTP response. The status line of the response is set to "HTTP/1.1 404 NOT FOUND", indicating an unsuccessful HTTP request. The contents of the response are read from a file named "notfound.html". The length of the contents is calculated and set as the "Content-Length" header of the response.
 
-### 4. new `handle_connection` method to simulate a slow request
+### 4. New `handle_connection` method to simulate a slow request
 
 #### Browser with /sleep Route:
 
@@ -43,3 +43,7 @@
 - The `ThreadPool::new` function initializes the thread pool with the specified number of worker threads. The `ThreadPool::execute` method allows submitting closures representing tasks to be executed concurrently.
 
 - Within the `Worker` struct, each worker thread runs a loop where it continually receives and executes jobs from the channel. This setup enables efficient utilization of system resources for handling multiple connections simultaneously, improving the responsiveness and scalability of the server. This approach abstracts away the complexity of managing individual threads and synchronization primitives, providing a higher-level interface for concurrent execution.
+
+### 6. [Bonus] `build` method to replace `new` method
+
+- The `ThreadPool::new` method is replaced with a `ThreadPool::build` method that allows configuring the number of worker threads using a builder pattern. This change provides more flexibility in constructing thread pools with custom configurations, such as setting the number of worker threads based on the available system resources or desired performance characteristics.

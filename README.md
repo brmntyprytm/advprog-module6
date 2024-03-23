@@ -35,3 +35,11 @@
 - Meanwhile, if you navigate to 127.0.0.1 in another browser window, the server's handle_connection function receives a request with the path /.
 - Since this path matches the "GET / HTTP/1.1\r\n" case, it responds immediately with the contents of hello.html.
 - This response is not delayed because the request did not match the /sleep route, and the server can handle it immediately.
+
+### 5. Multithreaded Server Implementation
+
+- A simple thread pool implementation is provided to handle incoming TCP connections concurrently. The `ThreadPool` struct manages a fixed number of worker threads, each of which listens for jobs sent via a message passing channel. Upon receiving a job, a worker executes the provided closure, which typically represents handling an incoming connection.
+
+- The `ThreadPool::new` function initializes the thread pool with the specified number of worker threads. The `ThreadPool::execute` method allows submitting closures representing tasks to be executed concurrently.
+
+- Within the `Worker` struct, each worker thread runs a loop where it continually receives and executes jobs from the channel. This setup enables efficient utilization of system resources for handling multiple connections simultaneously, improving the responsiveness and scalability of the server. This approach abstracts away the complexity of managing individual threads and synchronization primitives, providing a higher-level interface for concurrent execution.
